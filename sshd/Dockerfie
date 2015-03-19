@@ -30,7 +30,6 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-
 RUN useradd -m ${USER_ID}
 RUN echo "${USER_ID} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN chsh -s /bin/bash ${USER_ID}
@@ -38,8 +37,6 @@ RUN chsh -s /bin/bash ${USER_ID}
 WORKDIR /home/${USER_ID}
 USER ${USER_ID}
 ENV HOME  /home/${USER_ID}
-
-RUN whoami
 
 RUN mkdir -p /home/${USER_ID}/.ssh/
 RUN echo "ssh-rsa ${SSH_KEY}" > /home/${USER_ID}/.ssh/authorized_keys
@@ -58,7 +55,7 @@ RUN echo 'eval "$(pyenv virtualenv-init -)"' >>  ~/.bashrc
 RUN pyenv install $(pyenv install -l | grep " 2." | tail -n 1)
 RUN pyenv global $(pyenv install -l | grep " 2." | tail -n 1)
 
-# Demonize
+# Demonize / run as root
 USER root
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
